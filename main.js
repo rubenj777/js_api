@@ -1,19 +1,5 @@
 const content = document.querySelector(".content");
 
-// btn_xml.addEventListener("click", () => display_xml());
-// btn_fetch.addEventListener("click", () => display_fetch());
-// btn_velos.addEventListener("click", () => display_velos());
-
-// function display_xml() {
-//   let request = new XMLHttpRequest();
-//   request.open("GET", "http://localhost/cyclisterie/testApi.php");
-//   request.onload = () => {
-//     let data = JSON.parse(request.responseText);
-//     console.log(data);
-//   };
-//   request.send();
-// }
-
 function displayAll() {
   let url = "http://localhost/cyclisterie/?type=velo&action=indexApi";
   fetch(url)
@@ -26,13 +12,23 @@ function displayAll() {
       const seeButtons = document.querySelectorAll(".seeButton");
       seeButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          getVelo(button.id);
+          displayOne(button.id);
         });
       });
     });
 }
 
-function getVelo(id) {
+function back() {
+  const backButtons = document.querySelector(".backButtons");
+  console.log(backButtons);
+  backButtons.forEach((button) => {
+    button.addEventListener("click", () => displayAll());
+  });
+}
+
+function displayOne(id) {
+  let loader = ` <div class="loader"></div> `;
+  content.innerHTML = loader;
   fetch("http://localhost/cyclisterie/?type=velo&action=showApi&id=" + id)
     .then((response) => response.json())
     .then((monVelo) => {
@@ -43,7 +39,7 @@ function getVelo(id) {
 function displayAvis(arrayAvis) {
   let mesAvis = "";
   arrayAvis.forEach((avis) => {
-    let template = `<div class="card">
+    let template = `<div class="card p-2 m-2  ">
     <h3>${avis.author.name}</h3>
     <p>${avis.content}</p>
     </div>`;
@@ -53,7 +49,7 @@ function displayAvis(arrayAvis) {
 }
 
 function simpleTemplate(velo) {
-  template = `<div class="mt-5">
+  template = `<div class="mt-5 me-5">
   <h3>${velo.name}</h3>
   <img width="250px" src="http://localhost/cyclisterie/images/${velo.image}">
   <p>${velo.description}</p>
@@ -67,7 +63,7 @@ function templateAvis(velo) {
   <h3>${velo.name}</h3>
   <p>${velo.description}</p>
   <img width="250px" src="http://localhost/cyclisterie/images/${velo.image}">
-  <button class="btn btn-secondary back">Retour</button>
+  <a href="${back()}" class="btn btn-secondary backButtons">Retour</a>
   <div class=""> 
   ${displayAvis(velo.avis)}                        
   </div>
